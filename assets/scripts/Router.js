@@ -71,14 +71,17 @@ export class Router {
       return;
     }
     let hash;
-    if (page == 'home'){
-      hash = ""
+    let wholeurl = window.location.origin;
+    if (page == "home"){
+      hash = "";
     }
     else {
       hash = "#"+page;
+      wholeurl = window.location + hash;
     }
     if (!statePopped && window.location.hash !=hash){
-      history.pushState()
+      history.pushState(page, "", wholeurl);
     }
+    this[page]();
   }
 }

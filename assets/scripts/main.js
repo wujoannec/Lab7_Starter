@@ -14,11 +14,8 @@ const recipeData = {} // You can access all of the Recipe Data from the JSON fil
 
 const router = new Router(function () {
 
-  let recipeCards = document.querySelector("section.section--recipe-cards");
-  recipeCards.classList.add("shown");
-
-  let recipeExpand = document.querySelector("section.section--recipe-expand");
-  recipeExpand.classList.remove("shown");
+  document.querySelector("section.section--recipe-cards").classList.add("shown");
+  document.querySelector("section.section--recipe-expand").classList.remove("shown");
   /** 
    * TODO - Part 1 - Step 1
    * Select the 'section.section--recipe-cards' element and add the "shown" class
@@ -137,15 +134,18 @@ function createRecipeCards() {
   // in our recipes array, the ghostCookies URL, we will receive the .json
   // for that ghostCookies URL since it's a key in the recipeData object, and
   // then we'll grab the 'page-name' from it - in this case it will be 'ghostCookies'
-  const page = recipeData[recipes[i]]['page-name'];
-  router.addPage(page, function() {
-    document.querySelector('.section--recipe-cards').classList.remove('shown');
-    document.querySelector('.section--recipe-expand').classList.add('shown');
-    document.querySelector('recipe-expand').data = recipeData[recipes[0]];
-  });
-  bindRecipeCard(recipeCard, page);
+    if (i>2){
+      recipeCard.classList.add('hidden');
+    }
+    const page = recipeData[recipes[i]]['page-name'];
+    router.addPage(page, function() {
+      document.querySelector('.section--recipe-cards').classList.remove('shown');
+      document.querySelector('.section--recipe-expand').classList.add('shown');
+      document.querySelector('recipe-expand').data = recipeData[recipes[i]];
+    });
+    bindRecipeCard(recipeCard, page);
 
-  document.querySelector('.recipe-cards--wrapper').appendChild(recipeCard);
+    document.querySelector('.recipe-cards--wrapper').appendChild(recipeCard);
   }
 
 
@@ -205,6 +205,10 @@ function bindEscKey() {
    * if the escape key is pressed, use your router to navigate() to the 'home'
    * page. This will let us go back to the home page from the detailed page.
    */
+  window.addEventListener("keydown", (event)=> {
+    if (event.key == "Escape")
+      router.navigate("home");
+  });
 }
 
 /**
@@ -226,4 +230,13 @@ function bindPopstate() {
    * so your navigate() function does not add your going back action to the history,
    * creating an infinite loop
    */
+
+  window.addEventListener("popstate", (event) => {
+    if (event.state == null){
+      router.navigate("home", true);
+    }
+    else {
+      router.navigate(event.state, true);
+    }
+  });
 }
